@@ -1,0 +1,33 @@
+# Environment
+.env
+data_pipeline/.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+
+# Data
+data/raw/*
+data/processed/*
+data/annotated/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/annotated/.gitkeep
+
+# ML
+models/saved/
+mlruns/
+*.index
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
