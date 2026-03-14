@@ -1,0 +1,33 @@
+<!--
+  Label Studio project config for clause annotation.
+  Create a new project and paste this into the Labeling Setup.
+  Three choice labels: risk_type, actor_type, obligation_type
+-->
+<View>
+  <Header value="Clause text"/>
+  <Text name="text" value="$text"/>
+  <Header value="risk_type"/>
+  <Choices name="risk_type" toName="text">
+    <Choice value="misinfo"/>
+    <Choice value="cyber"/>
+    <Choice value="surveillance"/>
+    <Choice value="safety"/>
+    <Choice value="bias"/>
+    <Choice value="reporting"/>
+  </Choices>
+  <Header value="actor_type"/>
+  <Choices name="actor_type" toName="text">
+    <Choice value="model_provider"/>
+    <Choice value="app_deployer"/>
+    <Choice value="platform"/>
+    <Choice value="infra_operator"/>
+  </Choices>
+  <Header value="obligation_type"/>
+  <Choices name="obligation_type" toName="text">
+    <Choice value="testing"/>
+    <Choice value="reporting"/>
+    <Choice value="transparency"/>
+    <Choice value="logging"/>
+    <Choice value="assessment"/>
+  </Choices>
+</View>

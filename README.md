@@ -39,6 +39,18 @@ python run_pipeline.py
 
 Fetches EU laws from EUR-Lex and India laws from legislative.gov.in. Stores regulations and clauses in Supabase.
 
+## Annotation (Label Studio)
+
+Export clauses for labeling:
+
+```bash
+cd data_pipeline
+python -m annotate.prepare_labelstudio [limit]
+# Default limit: 500. Output: data_pipeline/annotated/labelstudio_import.json
+```
+
+Use `annotate/LABELSTUDIO_CONFIG.xml` as the Label Studio project config. Labels: risk_type, actor_type, obligation_type.
+
 ## Project Structure
 
 ```

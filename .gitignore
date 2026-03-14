@@ -13,9 +13,11 @@ __pycache__/
 data/raw/*
 data/processed/*
 data/annotated/*
+data_pipeline/annotated/*.json
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/annotated/.gitkeep
+!data_pipeline/annotated/.gitkeep
 
 # ML
 models/saved/
