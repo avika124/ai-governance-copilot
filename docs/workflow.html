@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global AI Governance Copilot — Workflow</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, var(--bg) 0%, #1e1b4b 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1.5rem 4rem;
+    }
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem 1rem 2rem;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Global AI Governance Copilot</h1>
+      <p class="subtitle">End-to-end workflow — data pipeline, analysis agent, API &amp; UI</p>
+    </header>
+
+    <div class="card">
+      <pre class="mermaid">
+flowchart TB
+  subgraph ingest["Data pipeline"]
+    A[EU: EUR-Lex HTML] --> D[(Supabase PostgreSQL)]
+    B[India: legislative.gov.in PDFs] --> D
+    D --> E[Clauses table<br/>~5k+ rows]
+    E --> F[FAISS index<br/>all-MiniLM embeddings]
+  end
+
+  subgraph agent["Analysis agent"]
+    G[Draft policy text] --> H[Parse sentences<br/>spaCy]
+    H --> I[Classify clauses<br/>risk / actor / obligation]
+    I --> J[Coverage checker<br/>vs REQUIRED_COVERAGE grid]
+    I --> K[FAISS similarity search<br/>top-5 corpus clauses]
+    K --> L[Conflict detector<br/>similarity ≥ 0.75]
+    J --> M[Recommender<br/>minimal · moderate · strict]
+    L --> M
+    M --> N[(analysis_reports)]
+    M --> O[PDF report]
+  end
+
+  subgraph api["API and UI"]
+    P[FastAPI /analyze] --> Q[Streamlit UI]
+    Q --> R[Coverage matrix · conflicts · policy cards]
+  end
+
+  F -.->|build on startup| K
+  D --> P
+  N --> P
+  G --> P
+
+  style D fill:#1e3a5f,stroke:#3b82f6
+  style N fill:#1e3a5f,stroke:#3b82f6
+  style F fill:#312e81,stroke:#6366f1
+      </pre>
+    </div>
+
+    <footer>
+      <p>
+        Repository:
+        <a href="https://github.com/avika124/ai-governance-copilot">github.com/avika124/ai-governance-copilot</a>
+      </p>
+      <p>Open this file in a browser to render the diagram.</p>
+    </footer>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "dark",
+      themeVariables: {
+        primaryColor: "#1e3a5f",
+        primaryTextColor: "#f1f5f9",
+        primaryBorderColor: "#3b82f6",
+        lineColor: "#94a3b8",
+        secondaryColor: "#312e81",
+        tertiaryColor: "#0f172a",
+        fontFamily: "Segoe UI, system-ui, sans-serif",
+      },
+      flowchart: { curve: "basis", padding: 12 },
+    });
+  </script>
+</body>
+</html>

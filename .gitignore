@@ -19,10 +19,11 @@ data_pipeline/annotated/*.json
 !data/annotated/.gitkeep
 !data_pipeline/annotated/.gitkeep
 
-# ML
+# ML / index
 models/saved/
 mlruns/
 *.index
+data/processed/
 
 # IDE
 .idea/
