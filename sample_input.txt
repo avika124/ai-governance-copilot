@@ -1,0 +1,9 @@
+Our organisation deploys a high-risk AI system for automated recruitment screening across the European Union and India. The system uses biometric identification including facial recognition to verify candidate identity. All AI-generated content, including synthetic media and deepfakes produced by the system, shall be clearly labelled with provenance metadata and watermarking to ensure transparency.
+
+Incident reporting obligations require that any significant security breach affecting the AI system must be reported to the relevant supervisory authority within 72 hours of discovery, without undue delay. A comprehensive vulnerability disclosure programme shall be maintained, addressing any identified security flaws and CVE notifications.
+
+Prior to deployment, the AI system shall undergo mandatory pre-deployment testing, including adversarial red-team stress testing and robustness evaluation. All models classified as general purpose AI (GPAI) shall be accompanied by technical documentation and transparency disclosures for downstream deployers.
+
+A fundamental rights impact assessment (FRIA) shall be conducted for all high-risk deployments. Algorithmic audits shall evaluate the system for bias, discrimination, and fairness across protected characteristics. The provider shall maintain detailed logs and records of system behaviour for a retention period of no less than 24 months.
+
+Data transfers between EU and India shall rely on Standard Contractual Clauses (SCCs) where no adequacy decision is in force. The platform operator shall implement purpose limitation controls to ensure biometric data is processed only for specifically authorised and proportionate objectives.
