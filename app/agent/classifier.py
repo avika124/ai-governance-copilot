@@ -50,16 +50,18 @@ def classify_clause(text: str) -> dict[str, str]:
 
     rs = _score_keywords(text, RISK_KEYWORDS)
     risk = max(rs, key=rs.get)
+    if rs[risk] == 0:
+        risk = "unclassified"
 
     as_ = _score_keywords(text, ACTOR_KEYWORDS)
     actor = max(as_, key=as_.get)
     if as_[actor] == 0:
-        actor = "platform"
+        actor = "unclassified"
 
     os_ = _score_keywords(text, OBL_KEYWORDS)
     obl = max(os_, key=os_.get)
     if os_[obl] == 0:
-        obl = "assessment"
+        obl = "unclassified"
 
     return {
         "risk_type": risk,

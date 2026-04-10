@@ -46,7 +46,36 @@ def run_pipeline(
 
     Returns structured JSON report.
     """
+    # Guard: truncate extremely long input
+    if len(draft_text) > 100_000:
+        logger.warning("Input truncated from %d to 100 000 characters", len(draft_text))
+        draft_text = draft_text[:100_000]
+
     clauses = parse_clauses(draft_text)
+
+    # Guard: no actionable clauses extracted
+    if not clauses:
+        logger.info("No actionable clauses parsed from input (%d chars)", len(draft_text))
+        empty_coverage = {
+            "grid": {},
+            "summary": {"covered": 0, "total": 0, "fraction": 0},
+        }
+        return {
+            "input_preview": draft_text[:500],
+            "clause_count": 0,
+            "classified_clauses": [],
+            "coverage": empty_coverage,
+            "conflicts": {"items": [], "count": 0},
+            "recommendations": {
+                "minimal": {"title": "Insufficient input", "summary": "The submitted text did not contain actionable policy clauses. Please paste complete draft policy language containing obligations, risk categories, or reporting requirements.", "sample_language": ""},
+                "moderate": {"title": "Insufficient input", "summary": "No analysis could be performed.", "sample_language": ""},
+                "strict": {"title": "Insufficient input", "summary": "No analysis could be performed.", "sample_language": ""},
+                "gaps_addressed_next": [],
+            },
+            "report_id": None,
+            "no_clauses": True,
+        }
+
     classified = classify_clauses(clauses)
     coverage = check_coverage(draft_text, classified)
     conflicts = detect_conflicts(classified)

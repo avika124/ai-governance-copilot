@@ -54,6 +54,10 @@ app.add_middleware(
 @app.post("/analyze", response_model=AnalyzeResponse)
 def analyze(body: AnalyzeRequest) -> dict[str, Any]:
     """Run full agent pipeline on draft text."""
+    import re as _re
+    cleaned = _re.sub(r"[\s\W]+", "", body.text)
+    if len(cleaned) < 5:
+        raise HTTPException(status_code=422, detail="Input contains no substantive text.")
     try:
         result = run_pipeline(body.text, persist=True)
     except Exception as e:
@@ -126,5 +130,21 @@ def report(report_id: int) -> dict:
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+def health() -> dict[str, Any]:
+    """Report API, DB, and FAISS status."""
+    status: dict[str, Any] = {"api": "ok"}
+    # DB check
+    try:
+        from app.services.database import get_connection
+        conn = get_connection()
+        conn.close()
+        status["database"] = "ok"
+    except Exception as e:
+        status["database"] = f"error: {e}"
+    # FAISS check
+    try:
+        from app.services.faiss_index import _index
+        status["faiss_vectors"] = _index.ntotal if _index else 0
+    except Exception:
+        status["faiss_vectors"] = 0
+    return status

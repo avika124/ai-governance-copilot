@@ -19,10 +19,31 @@ def generate_recommendations(
             if not info.get("covered"):
                 missing.append(f"{risk}:{area}")
 
+    conflict_count = conflicts.get("count", 0)
+
+    # Full compliance fast-path
+    if not missing and not conflict_count:
+        compliant_card = {
+            "title": "Full compliance indicated",
+            "summary": (
+                "The draft text addresses all required coverage sub-areas and no cross-border "
+                "tensions were identified against the reference corpus. Consider periodic "
+                "re-evaluation as regulations evolve."
+            ),
+            "sample_language": "",
+        }
+        return {
+            "minimal": compliant_card,
+            "moderate": compliant_card,
+            "strict": compliant_card,
+            "gaps_addressed_next": [],
+            "full_compliance": True,
+        }
+
     conflict_note = ""
-    if conflicts.get("count"):
+    if conflict_count:
         conflict_note = (
-            f"Detected {conflicts['count']} potential cross-border tension(s); "
+            f"Detected {conflict_count} potential cross-border tension(s); "
             "align timelines and data-transfer clauses with stricter jurisdiction where operating."
         )
 

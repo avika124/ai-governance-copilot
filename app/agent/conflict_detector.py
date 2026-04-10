@@ -2,11 +2,14 @@
 Cross-border conflict detection via FAISS similarity + obligation alignment.
 """
 
+import logging
 import re
 from typing import Any
 
 from app.config import FAISS_SIMILARITY_THRESHOLD
 from app.services.faiss_index import search_similar
+
+logger = logging.getLogger(__name__)
 
 
 def detect_conflicts(
@@ -22,7 +25,11 @@ def detect_conflicts(
         text = cl.get("clause_text", cl.get("text", ""))[:2000]
         if len(text.strip()) < 30:
             continue
-        hits = search_similar(text, top_k=5)
+        try:
+            hits = search_similar(text, top_k=5)
+        except Exception as e:
+            logger.warning("FAISS search failed for clause: %s", e)
+            continue
         obl = cl.get("obligation_type", "assessment")
 
         for h in hits:
