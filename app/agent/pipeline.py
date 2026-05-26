@@ -12,19 +12,12 @@ from app.agent.classifier import classify_clauses
 from app.agent.conflict_detector import detect_conflicts
 from app.agent.coverage_checker import check_coverage
 from app.agent.recommender import generate_recommendations
-from app.services.database import insert_analysis_report
 
 
 def parse_clauses(draft_text: str) -> list[dict[str, Any]]:
-    """
-    Split draft into sentence-level clauses.
-
-    Uses regex split if spaCy unavailable; otherwise spaCy sents.
-    """
     text = draft_text.strip()
     if not text:
         return []
-
     try:
         import spacy
         nlp = spacy.load("en_core_web_sm")
@@ -33,33 +26,17 @@ def parse_clauses(draft_text: str) -> list[dict[str, Any]]:
     except Exception:
         sents = re.split(r"(?<=[.!?])\s+", text)
         sents = [s.strip() for s in sents if len(s.strip()) > 25]
-
     return [{"clause_text": s, "article_number": "draft"} for s in sents[:500]]
 
 
-def run_pipeline(
-    draft_text: str,
-    persist: bool = True,
-) -> dict[str, Any]:
-    """
-    Execute full analysis: parse → classify → coverage → conflicts → recommendations.
-
-    Returns structured JSON report.
-    """
-    # Guard: truncate extremely long input
+def run_pipeline(draft_text: str, persist: bool = True) -> dict[str, Any]:
     if len(draft_text) > 100_000:
-        logger.warning("Input truncated from %d to 100 000 characters", len(draft_text))
         draft_text = draft_text[:100_000]
 
     clauses = parse_clauses(draft_text)
 
-    # Guard: no actionable clauses extracted
     if not clauses:
-        logger.info("No actionable clauses parsed from input (%d chars)", len(draft_text))
-        empty_coverage = {
-            "grid": {},
-            "summary": {"covered": 0, "total": 0, "fraction": 0},
-        }
+        empty_coverage = {"grid": {}, "summary": {"covered": 0, "total": 0, "fraction": 0}}
         return {
             "input_preview": draft_text[:500],
             "clause_count": 0,
@@ -67,7 +44,7 @@ def run_pipeline(
             "coverage": empty_coverage,
             "conflicts": {"items": [], "count": 0},
             "recommendations": {
-                "minimal": {"title": "Insufficient input", "summary": "The submitted text did not contain actionable policy clauses. Please paste complete draft policy language containing obligations, risk categories, or reporting requirements.", "sample_language": ""},
+                "minimal": {"title": "Insufficient input", "summary": "Please paste complete draft policy language.", "sample_language": ""},
                 "moderate": {"title": "Insufficient input", "summary": "No analysis could be performed.", "sample_language": ""},
                 "strict": {"title": "Insufficient input", "summary": "No analysis could be performed.", "sample_language": ""},
                 "gaps_addressed_next": [],
@@ -84,23 +61,20 @@ def run_pipeline(
     report = {
         "input_preview": draft_text[:500],
         "clause_count": len(classified),
-        "classified_clauses": classified[:50],  # trim for response size
+        "classified_clauses": classified[:50],
         "coverage": coverage,
         "conflicts": conflicts,
         "recommendations": recommendations,
+        "report_id": None,
     }
 
+    # Only try to persist if DB is available
     if persist:
         try:
-            rid = insert_analysis_report(
-                draft_text,
-                coverage,
-                conflicts,
-                recommendations,
-            )
+            from app.services.database import insert_analysis_report
+            rid = insert_analysis_report(draft_text, coverage, conflicts, recommendations)
             report["report_id"] = rid
         except Exception as e:
-            logger.warning("Could not persist report: %s", e)
-            report["report_id"] = None
+            logger.warning("Could not persist report (no DB): %s", e)
 
     return report
