@@ -78,8 +78,13 @@ def build_or_load_index(force_rebuild: bool = False) -> tuple[Any, list[dict]]:
 
 def search_similar(query_text: str, top_k: int = 5) -> list[dict[str, Any]]:
     """Return top_k similar clauses with similarity score."""
-    index, meta = build_or_load_index()
-    if index.ntotal == 0:
+    try:
+        index, meta = build_or_load_index()
+    except Exception as e:
+        logger.warning("Could not load FAISS index: %s", e)
+        return []
+
+    if index is None or index.ntotal == 0:
         return []
 
     from app.services.embeddings import embed_query
