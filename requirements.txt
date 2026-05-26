@@ -1,19 +1,17 @@
-# --- Application (API + UI + Agent) ---
-fastapi>=0.109.0
-uvicorn[standard]>=0.27.0
 python-dotenv>=1.0.0
 pydantic>=2.5.0
 psycopg2-binary>=2.9.0
-sentence-transformers>=2.2.0
-torch>=2.1.0
-faiss-cpu>=1.7.4
-spacy>=3.7.0
 streamlit>=1.29.0
 pandas>=2.0.0
 requests>=2.31.0
 reportlab>=4.0.0
-
-# --- Data pipeline (optional same venv) ---
+sentence-transformers>=2.2.0
+torch>=2.1.0
+faiss-cpu>=1.7.4
+spacy>=3.8.0
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
 beautifulsoup4>=4.12.0
 pymupdf>=1.23.0
 lxml>=5.0.0
